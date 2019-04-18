@@ -18,7 +18,7 @@ import java.io.StringWriter;
  * 使用方法：
  *      将api-doc在线地址 写入source 字符串中，以逗号进行分割即可。必须把api-doc经过进行在线部署。让程序使用http|https|file:///
  */
-public class Test {
+public class TestBak {
 
     private static boolean proxySet = false;
     public static void main(String args[]) throws Exception {
