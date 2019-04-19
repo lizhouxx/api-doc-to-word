@@ -1,6 +1,8 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -26,6 +28,10 @@ public class Test {
         String source = "file:///D:/work_2.5/pg/tmp/apidoc_loc/";
         String gen="D:\\tmp\\one";
         
+        String show="{'common':[],'a':['b']}";
+        JSONObject showGA = JSONObject.parseObject(show);
+        
+
         
         //添加模板文件信息
         VelocityEngine ve = new VelocityEngine();
@@ -56,7 +62,9 @@ public class Test {
             params = "";
             getResult = HttpsUtils.sendGet(url1, params, proxySet);
             getResult = getResult.replace("define(","").replace(");","");
+            //api
             json = JSON.parseObject(getResult);
+            System.out.println(json);
             JSONArray jsons = json.getJSONArray("api");
             HashMap<String,ArrayList<dev_3>> hash = new HashMap<>();
             ArrayList<String> dev_2_names = new ArrayList<>();
@@ -75,6 +83,9 @@ public class Test {
                 }
                 if(jsons.getJSONObject(i).getString("title")!=null){
                     tmp_dev_3.setAPI_TITLE(jsons.getJSONObject(i).getString("title"));
+                }
+                if(jsons.getJSONObject(i).getString("name")!=null){
+                    tmp_dev_3.setAPI_NAME(jsons.getJSONObject(i).getString("name"));
                 }
                 if(jsons.getJSONObject(i).getString("description")!=null){
                     tmp_dev_3.setAPI_DESC(jsons.getJSONObject(i).getString("description"));
@@ -172,22 +183,29 @@ public class Test {
                     }
                 }
 
-                hash.get(jsons.getJSONObject(i).getString("groupTitle")).add(tmp_dev_3);
+                if((showGA.getJSONArray(tmp_dev_3.getAPI_GROUP())==null || showGA.getJSONArray(tmp_dev_3.getAPI_GROUP()).size()==0) || showGA.getJSONArray(tmp_dev_3.getAPI_GROUP()).contains(tmp_dev_3.getAPI_TITLE()))
+                {
+                    hash.get(jsons.getJSONObject(i).getString("groupTitle")).add(tmp_dev_3);
+                }
             }
 
             // dev_2多了一个参数值，与group一致,得到
             for (String dev_2_name:dev_2_names
                     ) {
-                dev_2 tmp_dev_2 = new dev_2();
-                tmp_dev_2.setAPI_MODULE(dev_2_name);
-                tmp_dev_2.setAPI_INFO(hash.get(dev_2_name));
-                dev_2_list.add(tmp_dev_2);
+                if(showGA.isEmpty() || showGA.containsKey(dev_2_name))
+                {
+                    dev_2 tmp_dev_2 = new dev_2();
+                    tmp_dev_2.setAPI_MODULE(dev_2_name);
+                    tmp_dev_2.setAPI_INFO(hash.get(dev_2_name));
+                    dev_2_list.add(tmp_dev_2);
+                }
             }
             //生成模板文件
             tmp_dev_1.setDev_2_lists(dev_2_list);
             lists.add(tmp_dev_1);
         }
 
+        System.out.println(JSONObject.toJSONString(lists));
         ctx.put("tmp_1","传入参数:");
         ctx.put("tmp_2","字段");
         ctx.put("tmp_3","类型");
@@ -197,6 +215,8 @@ public class Test {
         ctx.put("tmp_7","成功返回参数:");
         ctx.put("tmp_8","示例请求:");
         ctx.put("div_1_list",lists);
+
+        
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         write(gen+".html",sw.toString());

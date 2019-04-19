@@ -22,7 +22,7 @@
             #set($now2 = $velocityCount)
             <article id="api-${div_2.API_MODULE}-list-3.0.0" data-group="${div_2.API_MODULE}" data-name="list" data-version="3.0.0">
                 <div class="pull-left">
-                    <h3>$now.$now1.$now2 ${div_3.API_GROUP} - ${div_3.API_TITLE}</h3>
+                    <h3>$now.$now1.$now2 ${div_3.API_TITLE}</h3>
                 </div>
                 <div class="clearfix"></div>
                 #if( !("$!{div_3.API_DESC}" == ""))

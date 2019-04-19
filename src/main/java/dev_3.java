@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 public class dev_3 {
 
+    String API_NAME;
+    
     String API_GROUP;
 
     String API_TITLE;
@@ -63,6 +65,16 @@ public class dev_3 {
 
     public String getAPI_TYPE() {
         return API_TYPE;
+    }
+
+    public String getAPI_NAME()
+    {
+        return API_NAME;
+    }
+
+    public void setAPI_NAME(String aPI_NAME)
+    {
+        API_NAME = aPI_NAME;
     }
 
     public void setAPI_TYPE(String API_TYPE) {
